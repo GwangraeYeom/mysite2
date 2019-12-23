@@ -1,4 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.bigdata2019.mysite.vo.GuestbookVo"%>
+<%@page import="java.util.List"%>
+<%@page import="com.bigdata2019.mysite.repository.GuestbookDao"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+	List<GuestbookVo> list = new GuestbookDao().findAll();
+%>  
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,8 +19,8 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="guestbook">
-				<form action="/guestbook" method="post">
-					<input type="hidden" name="a" value="insert">
+				<form action="<%=request.getContextPath() %>/guestbook" method="post">
+					<input type="hidden" name="a" value="insert"/>
 					<table>
 						<tr>
 							<td>이름</td><td><input type="text" name="name"></td>
@@ -28,21 +36,27 @@
 				</form>
 				<ul>
 					<li>
+						<%
+							int totalCount = list.size();
+							int index = 0;
+							for(GuestbookVo vo : list){
+						%>
 						<table>
 							<tr>
-								<td>[4]</td>
-								<td>안대혁</td>
-								<td>2015-11-10 11:22:30</td>
-								<td><a href="">삭제</a></td>
+								<td>[<%=totalCount-index++ %>]</td>
+								<td><%=vo.getName() %></td>
+								<td><%=vo.getRegDate() %></td>
+								<td><a href="<%=request.getContextPath() %>/guestbook?a=deleteform&no=<%=vo.getNo() %>">삭제</a></td>
 							</tr>
 							<tr>
-								<td colspan=4>
-								안녕하세요. ^^;<br>
-								하하하하	
+								<td colspan=4><%=vo.getContents().replace("\n", "<br>")%></td>
 								</td>
 							</tr>
 						</table>
 						<br>
+						<%
+							}
+						%>
 					</li>
 				</ul>
 			</div>
